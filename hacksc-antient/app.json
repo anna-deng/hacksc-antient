@@ -24,6 +24,9 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "facebookScheme": "fb1033605246838480",
+    "facebookAppId": "1033605246838480",
+    "facebookDisplayName": "hackSC"
   }
 }
