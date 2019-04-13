@@ -1,121 +1,62 @@
-import React, {Component} from 'react';
-import { StyleSheet, Text, View, Alert, Image } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
-import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import firebase from './Firebase';
-
-
-
-
-
-
-
+import React from 'react';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { AppLoading, Asset, Font, Icon } from 'expo';
+import AppNavigator from './navigation/AppNavigator';
+import LoginScreen from "./Screens/Login.js";
 
 export default class App extends React.Component {
-
-
-  constructor(props) {
-    super(props);
-    this._getCoords = this._getCoords.bind(this);
-
-    this.state = {
-        position: null,
-        markers: [{
-          latlng: {
-            latitude: 13.4,
-            longitude: 100.2
-          },
-          title: "Float's Home",
-          description: "This is Float's Humble Abode"
-        }]
-
-    };
-  }
-
-  componentDidMount() {
-
-    ref = firebase.database().ref('hi');
-
-
-
-    
-
-    
-    //this._getCoords();
-
-    ref.on('value', (snapshot) => {
-        console.log(snapshot.val());
-        this.setState(snapshot.val())
-      })
-  }
-
-  _getCoords = () => {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            var initialPosition = JSON.stringify(position.coords);
-            this.setState({position: initialPosition});
-            let tempCoords = {
-                latitude: Number(position.coords.latitude),
-                longitude: Number(position.coords.longitude),
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-            }
-            this._map.animateToRegion(tempCoords, 1000);
-          }, function (error) { alert(error) },
-    );
+  state = {
+    isLoadingComplete: false,
   };
 
   render() {
-    return (
-     
-      <View style={styles.container}>
-
-        <MapView  style={styles.map}
-        showsUserLocation
-        ref = { map => {this._map = map} }>
-
-          {this.state.markers && this.state.markers.map(marker => (
-            <Marker
-              coordinate={marker.latlng}
-              title={this.state.hello}
-              description={marker.description}>
-              <Image
-          style={{width: 40, height: 40, borderRadius:20, borderColor: 'white', borderWidth: 1}}
-          source={{uri: 'https://avatars2.githubusercontent.com/u/8173340?s=400&v=4'}}
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+      return (
+        <AppLoading
+          startAsync={this._loadResourcesAsync}
+          onError={this._handleLoadingError}
+          onFinish={this._handleFinishLoading}
         />
-              </Marker>
-          ))}
-        
-        </MapView>
-      
-        
-        <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
-          <Button
-            
-            onPress={this._getCoords}
-            icon={{
-              name: "near-me",
-              size: 40,
-              color: "white"
-            }}/>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          <AppNavigator />
         </View>
-      </View>
-    );
+      );
+    }
   }
+
+  _loadResourcesAsync = async () => {
+    return Promise.all([
+      Asset.loadAsync([
+        require('./assets/images/robot-dev.png'),
+        require('./assets/images/robot-prod.png'),
+      ]),
+      Font.loadAsync({
+        // This is the font that we are using for our tab bar
+        ...Icon.Ionicons.font,
+        // We include SpaceMono because we use it in HomeScreen.js. Feel free
+        // to remove this if you are not using it in your app
+      }),
+    ]);
+  };
+
+  _handleLoadingError = error => {
+    // In this case, you might want to report the error to your error
+    // reporting service, for example Sentry
+    console.warn(error);
+  };
+
+  _handleFinishLoading = () => {
+    this.setState({ isLoadingComplete: true });
+  };
 }
 
-const PictureMarkerView = () => (<View>
-
-</View>)
-
 const styles = StyleSheet.create({
-  map: {
-    zIndex: -1,
-    ...StyleSheet.absoluteFillObject,
-  },
   container: {
     flex: 1,
-    flexDirection: 'column'
+    backgroundColor: '#fff',
   },
 });
