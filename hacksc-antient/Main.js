@@ -19,7 +19,14 @@ export default class Main extends React.Component {
     this.state = {
         position: null,
         mapPressed: false,
-        name: "anna",
+        friends: [{
+          name: '',
+          status: 'test',
+          location: {
+            latitude:0,
+            longitude:0
+          }
+        }],
         markers: [{
           latlng: {
             latitude: 13.4,
@@ -41,6 +48,9 @@ export default class Main extends React.Component {
         console.log(snapshot.val());
         this.setState(snapshot.val())
       })
+
+
+      this.setState({friends:[{name:'jon',status:'here',location:{latitude:4,longitude:199}}]})
   }
 
   getFriendsList() {
@@ -89,7 +99,6 @@ export default class Main extends React.Component {
 
   render() {
     return (
-
       <View style={styles.container}>
 
       <Header
@@ -141,7 +150,16 @@ export default class Main extends React.Component {
         </View>
 
         <View style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
-        <Friends name={this.state.name} />
+
+            {this.state.friends.map(friend => {
+          return (
+            <Friends
+              name={friend.name}
+              status={friend.status}
+              location={friend.location}
+            />
+          );
+        })}
         </View>
 
         <View style={{width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
