@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Alert, Image } from 'react-native';
+import { StyleSheet, View, Alert, Image, TouchableOpacity } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
 import { Directions } from 'react-native-gesture-handler';
 import { Header } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-elements';
 import Friends from './Components/Friends'
 
 export default class Main extends React.Component {
@@ -125,29 +124,7 @@ export default class Main extends React.Component {
               </Marker>
           ))}
 
-          <View style={{position: 'absolute', bottom: -10, right: -10, margin: 0, zIndex:1}}>
-            <Button
-              onPress={this._getCoords}
-              icon={{
-                name: "near-me",
-                size: 40,
-                color: "white",
-                zIndex:2
-              }}/>
-          </View>
-
         </MapView>
-
-{/*pulling facebook profiles*/}
-        <View style={{backgroundColor: 'rgba(50,50,50,0.8)', position: 'absolute', top: 50, width: '95%', padding: 10, borderRadius: 30, alignItems: 'center', opacity: 80, flexDirection: 'row'}}>
-          <Image
-          style={{width: 80, height: 80, borderRadius:40, margin: 10}}
-          source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>
-          <View style={{height: '100%', justifyContent: 'space-around', flexShrink: 1}}>
-            <Text style={{color: 'white', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 18}}>{firebase.auth().currentUser.displayName}</Text>
-          </View>
-          <Icon raised name="settings" size="40" color="white" reverse/>
-        </View>
 
         <View style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
 
@@ -162,24 +139,33 @@ export default class Main extends React.Component {
         })}
         </View>
 
-        <View style={{width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
-        {this.state.mapPressed ? <Button
+        <TouchableOpacity
           onPress={()=>this.setState({mapPressed:false})}
-          icon={{
-            name: "keyboard_arrow_up",
-            size: 40,
-            color: "black",
-            zIndex: 4
-          }}/> : null}
-
-        <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
-          <Button
+          style={{textAlignVertical: "center", justifyContent: 'space-around', flexDirection: "row", width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
+          {/*pulling facebook profiles*/}
+          <Image
+          style={{width: 50, height: 50, borderRadius:20, margin: 10}}
+          source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>
+          <Text style={{margin: 23,flex:1, color: 'black', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 16}}>{firebase.auth().currentUser.displayName}</Text>
+          {/*<Button
             onPress={this.firebaseLogout}
-            title="Sign Out"/>
-        </View>
+            title="Sign Out"/>*/}
+          <View style={{margin: 15}}>
+            <Button
+              size={5}
+              onPress={this._getCoords}
+              icon={{
+                name: "near-me",
+                size: 20,
+                color: "white",
+                zIndex:2,
+                bottom: 0,
+                right: 0,
+              }}/>
+          </View>
+          </TouchableOpacity>
         </View>
 
-      </View>
     );
   }
 }
