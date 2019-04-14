@@ -1,18 +1,12 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Alert, Image } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-<<<<<<< HEAD
 import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
 import { Directions } from 'react-native-gesture-handler';
-=======
-import { Button } from 'react-native-elements';
 import { Header } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import firebase from './Firebase';
 import { TouchableOpacity } from 'react-native-elements';
->>>>>>> map-page
 
 
 export default class Main extends React.Component {
@@ -24,6 +18,7 @@ export default class Main extends React.Component {
 
     this.state = {
         position: null,
+        mapPressed: false,
         markers: [{
           latlng: {
             latitude: 13.4,
@@ -37,7 +32,6 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-
     ref = firebase.database().ref('hi');
 
     this._getCoords();
@@ -105,7 +99,7 @@ export default class Main extends React.Component {
       title="Add"/>
     }/>
 
-        <MapView  style={styles.map}
+        <MapView onPress={()=>{this.setState({mapPressed:true})}} style={styles.map}
         showsUserLocation
         ref = { map => {this._map = map} }>
 
@@ -121,9 +115,20 @@ export default class Main extends React.Component {
               </Marker>
           ))}
 
+          <View style={{position: 'absolute', bottom: -10, right: -10, margin: 0, zIndex:1}}>
+            <Button
+              onPress={this._getCoords}
+              icon={{
+                name: "near-me",
+                size: 40,
+                color: "white",
+                zIndex:2
+              }}/>
+          </View>
+
         </MapView>
 
-<<<<<<< HEAD
+{/*pulling facebook profiles*/}
         <View style={{backgroundColor: 'rgba(50,50,50,0.8)', position: 'absolute', top: 50, width: '95%', padding: 10, borderRadius: 30, alignItems: 'center', opacity: 80, flexDirection: 'row'}}>
           <Image
           style={{width: 80, height: 80, borderRadius:40, margin: 10}}
@@ -132,26 +137,16 @@ export default class Main extends React.Component {
             <Text style={{color: 'white', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 18}}>{firebase.auth().currentUser.displayName}</Text>
           </View>
           <Icon raised name="settings" size="40" color="white" reverse/>
-
-
         </View>
-=======
->>>>>>> map-page
+
+        <View style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
+        <Text>hi</Text>
+        </View>
 
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
             onPress={this.firebaseLogout}
             title="Sign Out"/>
-        </View>
-
-        <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
-          <Button
-            onPress={this._getCoords}
-            icon={{
-              name: "near-me",
-              size: 40,
-              color: "white"
-            }}/>
         </View>
       </View>
     );
@@ -167,4 +162,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
+  hiddenFriends:{
+    height:'0%',
+    width:'100%',
+    position:'absolute',
+    bottom:0,
+    zIndex:1,
+    backgroundColor: 'rgba(50,50,50,0.9)'},
+  openFriends:{
+    height:'30%',
+    width:'100%',
+    position:'absolute',
+    bottom:0,
+    zIndex:1,
+    backgroundColor: 'rgba(50,50,50,0.9)'}
 });
