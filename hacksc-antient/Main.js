@@ -8,6 +8,7 @@ import { Directions } from 'react-native-gesture-handler';
 import { Header } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-elements';
 import Friends from './Components/Friends'
+import { Location } from 'expo';
 
 export default class Main extends React.Component {
 
@@ -33,15 +34,26 @@ export default class Main extends React.Component {
   }
 
   componentDidMount() {
-    ref = firebase.database().ref('hi');
 
     this._getCoords();
 
-    ref.on('value', (snapshot) => {
-        console.log(snapshot.val());
-        this.setState(snapshot.val())
-      })
-  }
+    const firestore = firebase.firestore();
+
+    Location.watchPositionAsync({
+      accuracy: Location.Accuracy.Balanced,
+      timeInterval: 1000,
+      distanceInterval: 50
+    }, (location) => {
+      firestore.collection("users").doc(this.props.navigation.getParam('uid')).update({
+        currentLocation: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          timestamp: location.timestamp
+        }
+      })   });
+    
+    }
+  
 
   getFriendsList() {
 
@@ -148,7 +160,7 @@ export default class Main extends React.Component {
         {this.state.mapPressed ? <Button
           onPress={()=>this.setState({mapPressed:false})}
           icon={{
-            name: "keyboard_arrow_up",
+            name: "keyboard-arrow-up",
             size: 40,
             color: "black",
             zIndex: 4

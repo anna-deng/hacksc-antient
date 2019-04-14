@@ -4,6 +4,7 @@ import { Button, SocialIcon} from 'react-native-elements';
 import firebase from './Firebase';
 
 
+
 export default class Login extends Component {
 
   constructor(props){
@@ -29,6 +30,7 @@ export default class Login extends Component {
 
 loginWithFacebook = async () => {
 
+    const firestore = firebase.firestore();
     this.setState({loggingin: true});
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       '1033605246838480',
@@ -43,9 +45,11 @@ loginWithFacebook = async () => {
       firebase.auth().signInAndRetrieveDataWithCredential(credential).then( (userCredential) => {
         //console.log(userCredential);
         if(userCredential.additionalUserInfo.isNewUser){
-          //TODO: new user save to database things
+          firestore.collection("users").doc(userCredential.user.uid).set({
+            photoURL: firebase.auth().currentUser.photoURL + "?height=300",
+            name: firebase.auth().currentUser.displayName
+          })
         }
-        this.props.navigation.navigate('Main');
       });
     } else {
       this.setState({loggingin: false});
