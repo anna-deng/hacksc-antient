@@ -140,10 +140,10 @@ _broadcast = () =>{
           color: "white"
         }}/>}
       centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
-      rightComponent={<Button
-      onPress={this._noFriends}
-      title="Add"/>
-    }/>
+      rightComponent={<Image
+    style={{width: 32, height: 32, borderRadius:32/2, bottom: 5, right:-2, margin: 5}}
+    source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>}/>
+
         <MapView onPress={()=>{this.setState({mapPressed:true, openMenu:false})}} style={styles.map}
         showsUserLocation
         ref = { map => {this._map = map} }>
