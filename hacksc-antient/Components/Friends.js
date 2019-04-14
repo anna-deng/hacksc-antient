@@ -3,11 +3,17 @@ import { StyleSheet, View, Alert, Image, Text, TouchableOpacity } from 'react-na
 import MapView, {Marker} from 'react-native-maps';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from '../Firebase';
+import { Location } from 'expo';
 
 export default class Friends extends React.Component {
   constructor(props) {
     super(props)
+    this.state={
+      city: null
+    }
   }
+
+  
 
   findFriend = () => {
     this.setState({
@@ -16,16 +22,25 @@ export default class Friends extends React.Component {
   }
 
  render() {
+
+  Location.reverseGeocodeAsync(friend.currentLocation).then((arr) => {
+    console.log(arr)
+    this.setState({city:`${arr[0].name}, ${arr[0].city}, ${arr[0].region}`})}).catch((e) => console.log(e))
+
    return (
      <View>
        <TouchableOpacity
         activeOpacity= {0.9}
          style={styles.button}
          onPress={this.findFriend}>
-         <View style={styles.circle}></View>
+           <Image
+          style={{padding:10, width: 40, height: 40, borderRadius:20}}
+          source={{uri: friend.photoURL}}
+        />
          <View>
           <Text style={styles.name}> {this.props.name} </Text>
           <Text style = {styles.status}> {this.props.status} </Text>
+          <Text style = {styles.status}> {this.state.city} </Text>
           </View>
 
        </TouchableOpacity>
