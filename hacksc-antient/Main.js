@@ -144,7 +144,7 @@ export default class Main extends React.Component {
           style={{textAlignVertical: "center", justifyContent: 'space-around', flexDirection: "row", width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
           {/*pulling facebook profiles*/}
           <Image
-          style={{width: 50, height: 50, borderRadius:20, margin: 10}}
+          style={{width: 50, height: 50, borderRadius:25, margin: 10}}
           source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>
           <Text style={{margin: 23,flex:1, color: 'black', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 16}}>{firebase.auth().currentUser.displayName}</Text>
           {/*<Button
