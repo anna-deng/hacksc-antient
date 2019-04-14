@@ -57,8 +57,6 @@ export default class Main extends React.Component {
           timestamp: location.timestamp
         }
       })   });
-    
-    
 
 
       this.setState({friends:[{name:'Jonathan Dai',status:'main is poppin roll thru',location:{latitude:4,longitude:199}},
@@ -111,6 +109,10 @@ export default class Main extends React.Component {
      )
    }
 
+_broadcast = () =>{
+
+}
+
   render() {
     return (
       <View style={styles.container}>
@@ -118,10 +120,13 @@ export default class Main extends React.Component {
       <Header
     leftComponent={{ icon: 'menu', color: '#fff' }}
     centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
-    rightComponent={<Button
-      onPress={this._noFriends}
-      title="Add"/>
-    }/>
+    rightComponent={<Image
+    style={{width: 32, height: 32, borderRadius:32/2, bottom: 5, right:-2, margin: 5}}
+    source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>}/>
+
+{/*<Button
+  onPress={this._noFriends}
+  title="Add"/>*/}
 
         <MapView onPress={()=>{this.setState({mapPressed:true})}} style={styles.map}
         showsUserLocation
@@ -159,13 +164,7 @@ export default class Main extends React.Component {
           onPress={()=>this.setState({mapPressed:false})}
           style={{textAlignVertical: "center", justifyContent: 'space-around', flexDirection: "row", width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
           {/*pulling facebook profiles*/}
-          <Image
-          style={{width: 50, height: 50, borderRadius:25, margin: 10}}
-          source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>
-          <Text style={{margin: 23,flex:1, color: 'black', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 16}}>{firebase.auth().currentUser.displayName}</Text>
-          {/*<Button
-            onPress={this.firebaseLogout}
-            title="Sign Out"/>*/}
+
           <View style={{margin: 15}}>
             <Button
               size={5}
@@ -176,9 +175,29 @@ export default class Main extends React.Component {
                 color: "white",
                 zIndex:2,
                 bottom: 0,
-                right: 0,
+                left: 0,
               }}/>
           </View>
+
+          <Text style={{margin: 23,flex:1, color: 'black', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 16, textAlign:'center'}}>{firebase.auth().currentUser.displayName}</Text>
+          {/*<Button
+            onPress={this.firebaseLogout}
+            title="Sign Out"/>*/}
+
+          <View style={{margin: 15}}>
+            <Button
+              size={5}
+              onPress={this._broadcast}
+              icon={{
+                name: "wifi-tethering",
+                size: 20,
+                color: "white",
+                zIndex:2,
+                bottom: 0,
+                left: 0,
+              }}/>
+          </View>
+
           </TouchableOpacity>
         </View>
 
