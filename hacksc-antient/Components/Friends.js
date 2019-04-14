@@ -23,7 +23,7 @@ export default class Friends extends React.Component {
 
  render() {
 
-  Location.reverseGeocodeAsync(friend.currentLocation).then((arr) => {
+  Location.reverseGeocodeAsync(this.props.location).then((arr) => {
     console.log(arr)
     this.setState({city:`${arr[0].name}, ${arr[0].city}, ${arr[0].region}`})}).catch((e) => console.log(e))
 
@@ -35,7 +35,7 @@ export default class Friends extends React.Component {
          onPress={this.findFriend}>
            <Image
           style={{padding:10, width: 40, height: 40, borderRadius:20}}
-          source={{uri: friend.photoURL}}
+          source={{uri: this.props.photoURL}}
         />
          <View>
           <Text style={styles.name}> {this.props.name} </Text>

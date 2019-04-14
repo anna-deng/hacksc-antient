@@ -163,6 +163,7 @@ export default class Main extends React.Component {
               name={friend.name}
               status={friend.status.status}
               location={friend.currentLocation}
+              photoURL ={friend.photoURL}
             />
           );
         })}
