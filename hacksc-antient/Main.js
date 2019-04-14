@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Alert, Image } from 'react-native';
+import { StyleSheet, View, Alert, Image } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import { Button } from 'react-native-elements';
+import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
+import { Directions } from 'react-native-gesture-handler';
 
 
 export default class Main extends React.Component {
@@ -94,6 +95,17 @@ export default class Main extends React.Component {
         
         </MapView>
       
+        <View style={{backgroundColor: 'rgba(50,50,50,0.8)', position: 'absolute', top: 50, width: '95%', padding: 10, borderRadius: 30, alignItems: 'center', opacity: 80, flexDirection: 'row'}}>
+          <Image
+          style={{width: 80, height: 80, borderRadius:40, margin: 10}}
+          source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>
+          <View style={{height: '100%', justifyContent: 'space-around', flexShrink: 1}}>
+            <Text style={{color: 'white', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 18}}>{firebase.auth().currentUser.displayName}</Text>
+          </View>
+          <Icon raised name="settings" size="40" color="white" reverse/>
+            
+
+        </View>
         
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
@@ -122,6 +134,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: 'column'
+    alignItems: 'center'
   },
 });

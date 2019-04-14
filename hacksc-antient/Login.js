@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, SocialIcon} from 'react-native-elements';
 import firebase from './Firebase';
 
 
@@ -16,7 +16,12 @@ export default class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button loading={this.state.loggingin} disabled={this.state.loggingin} onPress={this.loginWithFacebook} title="Login with Facebook"/>
+        
+        <SocialIcon
+        style={{width: '80%'}}
+  button
+  type='facebook'
+ loading={this.state.loggingin} disabled={this.state.loggingin} onPress={this.loginWithFacebook} title="Log in with Facebook"/>
       </View>
     );
   }
@@ -37,8 +42,13 @@ loginWithFacebook = async () => {
       // Sign in with credential from the Facebook user.
       firebase.auth().signInAndRetrieveDataWithCredential(credential).then( (userCredential) => {
         //console.log(userCredential);
+        if(userCredential.additionalUserInfo.isNewUser){
+          //TODO: new user save to database things
+        }
         this.props.navigation.navigate('Main');
       });
+    } else {
+      this.setState({loggingin: false});
     }
   }
 }
