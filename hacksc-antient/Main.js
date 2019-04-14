@@ -49,7 +49,7 @@ export default class Main extends React.Component {
       })
 
 
-      this.setState({friends:[{name:'jon',status:'here',location:{latitude:4,longitude:199}}]})
+      this.setState({friends:[{name:'Jonathan Dai',status:'main is poppin roll thru',location:{latitude:4,longitude:199}}]})
   }
 
   getFriendsList() {
