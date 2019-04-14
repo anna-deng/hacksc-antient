@@ -7,36 +7,30 @@ import firebase from './Firebase';
 import { Header } from 'react-native-elements';
 import Friends from './Components/Friends'
 import { Location } from 'expo';
+import SideMenu from 'react-native-side-menu';
 
 export default class Main extends React.Component {
 
 
 
-  
-  
+
+
   constructor(props) {
     super(props);
     this._getCoords = this._getCoords.bind(this);
+    this._openMenu = this._openMenu.bind(this);
 
-    
+
 
     this.state = {
         position: null,
         mapPressed: false,
-        markers: [{
-          latlng: {
-            latitude: 13.4,
-            longitude: 100.2
-          },
-          title: "Float's Home",
-          description: "This is Float's Humble Abode"
-        }]
-
+        openMenu: false,
     };
   }
 
 
-  
+
 
   componentDidMount() {
 
@@ -58,12 +52,12 @@ export default class Main extends React.Component {
       })   });
 
       this.getFriendsList();
-    
+
   }
 
 
 
-  
+
   getFriendsList = () => {
 
     const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
@@ -85,7 +79,7 @@ export default class Main extends React.Component {
       });
     });
   }
-    
+
   firebaseLogout = () => {
     firebase.auth().signOut()
   }
@@ -122,23 +116,35 @@ _broadcast = () =>{
 
 }
 
+   _openMenu = () => {
+    this.setState({openMenu:true})
+    }
+
   render() {
     console.log(this.state)
     return (
+    <SideMenu
+      isOpen={this.state.openMenu}
+      menuPosition="left"
+      style={{backgroundColor:"black"}}
+      menu={<View style={styles.sideBar}><Button
+        onPress={this.firebaseLogout}
+        title="Sign Out"/></View>}>
       <View style={styles.container}>
 
       <Header
-    leftComponent={{ icon: 'menu', color: '#fff' }}
-    centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
-    rightComponent={<Image
-    style={{width: 32, height: 32, borderRadius:32/2, bottom: 5, right:-2, margin: 5}}
-    source={{uri: firebase.auth().currentUser.photoURL + "?height=600"}}/>}/>
-
-{/*<Button
-  onPress={this._noFriends}
-  title="Add"/>*/}
-
-        <MapView onPress={()=>{this.setState({mapPressed:true})}} style={styles.map}
+      leftComponent={<Button
+        onPress={this._openMenu}
+        icon={{
+          name: "menu",
+          color: "white"
+        }}/>}
+      centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
+      rightComponent={<Button
+      onPress={this._noFriends}
+      title="Add"/>
+    }/>
+        <MapView onPress={()=>{this.setState({mapPressed:true, openMenu:false})}} style={styles.map}
         showsUserLocation
         ref = { map => {this._map = map} }>
 
@@ -155,7 +161,7 @@ _broadcast = () =>{
         />
               </Marker>
           )
-          
+
             })}
 
         </MapView>
@@ -164,7 +170,7 @@ _broadcast = () =>{
 
             {this.state.friends && Object.keys(this.state.friends).map(friendUID => {
               friend = this.state.friends[friendUID]
-              
+
           return (
             <Friends
               name={friend.name}
@@ -178,7 +184,7 @@ _broadcast = () =>{
 
         <TouchableOpacity
           activeOpacity= {1.0}
-          onPress={()=>this.setState({mapPressed:false})}
+          onPress={()=>this.setState({mapPressed:false, openMenu: false})}
           style={{textAlignVertical: "center", justifyContent: 'space-around', flexDirection: "row", width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
           {/*pulling facebook profiles*/}
 
@@ -217,7 +223,7 @@ _broadcast = () =>{
 
           </TouchableOpacity>
         </View>
-
+      </SideMenu>
     );
   }
 }
@@ -230,6 +236,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center'
+  },
+  sideBar:{
+    bottom: 0,
+    margin: 10,
+    position: 'absolute'
   },
   hiddenFriends:{
     height:'0%',
