@@ -1,10 +1,18 @@
 import React, {Component} from 'react';
 import { StyleSheet, View, Alert, Image } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
+<<<<<<< HEAD
 import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
 import { Directions } from 'react-native-gesture-handler';
+=======
+import { Button } from 'react-native-elements';
+import { Header } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import firebase from './Firebase';
+import { TouchableOpacity } from 'react-native-elements';
+>>>>>>> map-page
 
 
 export default class Main extends React.Component {
@@ -72,10 +80,30 @@ export default class Main extends React.Component {
     );
   };
 
+  _noFriends = () => {
+     Alert.alert(
+       'chill.',
+       'are your current friends not enough?',
+       [
+         {text: 'sorry', onPress: () => console.log('sorry')},
+         {text: 'sorry', onPress: () => console.log('sorry'), style: 'cancel'},
+       ],
+       { cancelable: false }
+     )
+   }
+
   render() {
     return (
 
       <View style={styles.container}>
+
+      <Header
+    leftComponent={{ icon: 'menu', color: '#fff' }}
+    centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
+    rightComponent={<Button
+      onPress={this._noFriends}
+      title="Add"/>
+    }/>
 
         <MapView  style={styles.map}
         showsUserLocation
@@ -95,6 +123,7 @@ export default class Main extends React.Component {
 
         </MapView>
 
+<<<<<<< HEAD
         <View style={{backgroundColor: 'rgba(50,50,50,0.8)', position: 'absolute', top: 50, width: '95%', padding: 10, borderRadius: 30, alignItems: 'center', opacity: 80, flexDirection: 'row'}}>
           <Image
           style={{width: 80, height: 80, borderRadius:40, margin: 10}}
@@ -106,6 +135,8 @@ export default class Main extends React.Component {
 
 
         </View>
+=======
+>>>>>>> map-page
 
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
