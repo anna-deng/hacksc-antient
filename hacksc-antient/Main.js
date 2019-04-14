@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, View, Alert, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -49,7 +49,10 @@ export default class Main extends React.Component {
       })
 
 
-      this.setState({friends:[{name:'Jonathan Dai',status:'main is poppin roll thru',location:{latitude:4,longitude:199}}]})
+      this.setState({friends:[{name:'Jonathan Dai',status:'main is poppin roll thru',location:{latitude:4,longitude:199}},
+  {name:'Anna Deng',status:'at home watching da bachelor',location:{latitude:4,longitude:199}},
+  {name:'Float Teephop',status:'finished my hw for the week hang with me',location:{latitude:4,longitude:199}},
+  {name:'Drew Parsons',status:'at data viz studio yeet-haw',location:{latitude:4,longitude:199}}]})
   }
 
   getFriendsList() {
@@ -126,7 +129,7 @@ export default class Main extends React.Component {
 
         </MapView>
 
-        <View style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
+        <ScrollView style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
 
             {this.state.friends.map(friend => {
           return (
@@ -137,9 +140,10 @@ export default class Main extends React.Component {
             />
           );
         })}
-        </View>
+        </ScrollView>
 
         <TouchableOpacity
+          activeOpacity= {1.0}
           onPress={()=>this.setState({mapPressed:false})}
           style={{textAlignVertical: "center", justifyContent: 'space-around', flexDirection: "row", width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
           {/*pulling facebook profiles*/}
@@ -183,14 +187,14 @@ const styles = StyleSheet.create({
     height:'0%',
     width:'100%',
     position:'absolute',
-    bottom:0,
+    bottom:'10%',
     zIndex:1,
     backgroundColor: 'rgba(50,50,50,0.9)'},
   openFriends:{
-    height:'30%',
+    height:'20%',
     width:'100%',
     position:'absolute',
-    bottom:0,
+    bottom:'10%',
     zIndex:1,
     backgroundColor: 'rgba(50,50,50,0.9)'}
 });
