@@ -7,7 +7,7 @@ import firebase from './Firebase';
 import { Directions } from 'react-native-gesture-handler';
 import { Header } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-elements';
-
+import Friends from './Components/Friends'
 
 export default class Main extends React.Component {
 
@@ -19,6 +19,7 @@ export default class Main extends React.Component {
     this.state = {
         position: null,
         mapPressed: false,
+        name: "anna",
         markers: [{
           latlng: {
             latitude: 13.4,
@@ -140,14 +141,26 @@ export default class Main extends React.Component {
         </View>
 
         <View style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
-        <Text>hi</Text>
+        <Friends name={this.state.name} />
         </View>
+
+        <View style={{width: '100%', height: '10%',backgroundColor:'white',position:'absolute',bottom:0,zIndex:3}}>
+        {this.state.mapPressed ? <Button
+          onPress={()=>this.setState({mapPressed:false})}
+          icon={{
+            name: "keyboard_arrow_up",
+            size: 40,
+            color: "black",
+            zIndex: 4
+          }}/> : null}
 
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
             onPress={this.firebaseLogout}
             title="Sign Out"/>
         </View>
+        </View>
+
       </View>
     );
   }
