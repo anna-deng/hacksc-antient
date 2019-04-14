@@ -31,7 +31,7 @@ export default class Main extends React.Component {
   componentDidMount() {
 
     ref = firebase.database().ref('hi');
-    
+
     this._getCoords();
 
     ref.on('value', (snapshot) => {
@@ -44,7 +44,7 @@ export default class Main extends React.Component {
 
     var friendsList = [];
 
-    
+
 
   }
 
@@ -74,7 +74,7 @@ export default class Main extends React.Component {
 
   render() {
     return (
-     
+
       <View style={styles.container}>
 
         <MapView  style={styles.map}
@@ -92,9 +92,9 @@ export default class Main extends React.Component {
         />
               </Marker>
           ))}
-        
+
         </MapView>
-      
+
         <View style={{backgroundColor: 'rgba(50,50,50,0.8)', position: 'absolute', top: 50, width: '95%', padding: 10, borderRadius: 30, alignItems: 'center', opacity: 80, flexDirection: 'row'}}>
           <Image
           style={{width: 80, height: 80, borderRadius:40, margin: 10}}
@@ -103,16 +103,16 @@ export default class Main extends React.Component {
             <Text style={{color: 'white', fontWeight: 'bold', textTransform: 'uppercase', fontSize: 18}}>{firebase.auth().currentUser.displayName}</Text>
           </View>
           <Icon raised name="settings" size="40" color="white" reverse/>
-            
+
 
         </View>
-        
+
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
             onPress={this.firebaseLogout}
             title="Sign Out"/>
         </View>
-        
+
         <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
           <Button
             onPress={this._getCoords}
