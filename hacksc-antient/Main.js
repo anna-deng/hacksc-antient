@@ -4,7 +4,6 @@ import MapView, {Marker} from 'react-native-maps';
 import { Button, Text, withTheme } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
-import { Directions } from 'react-native-gesture-handler';
 import { Header } from 'react-native-elements';
 import Friends from './Components/Friends'
 import { Location } from 'expo';
@@ -12,21 +11,18 @@ import { Location } from 'expo';
 export default class Main extends React.Component {
 
 
+
+  
+  
   constructor(props) {
     super(props);
     this._getCoords = this._getCoords.bind(this);
 
+    
+
     this.state = {
         position: null,
         mapPressed: false,
-        friends: [{
-          name: '',
-          status: 'test',
-          location: {
-            latitude:0,
-            longitude:0
-          }
-        }],
         markers: [{
           latlng: {
             latitude: 13.4,
@@ -39,46 +35,57 @@ export default class Main extends React.Component {
     };
   }
 
+
+  
+
   componentDidMount() {
 
     this._getCoords();
 
-    const firestore = firebase.firestore();
+    const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
 
     Location.watchPositionAsync({
       accuracy: Location.Accuracy.Balanced,
       timeInterval: 1000,
       distanceInterval: 50
     }, (location) => {
-      firestore.collection("users").doc(this.props.navigation.getParam('uid')).update({
+    userFirestoreRef.update({
         currentLocation: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
           timestamp: location.timestamp
         }
       })   });
+
+      this.getFriendsList();
     
+  }
+
+
+
+  
+  getFriendsList = () => {
+
+    const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
+    userFirestoreRef.onSnapshot((doc) => {
+      //console.log(doc.data())
+      doc.data().friends.forEach(friendUID => {
+        firebase.firestore().collection("users").doc(friendUID)
+          .onSnapshot((doc) => {
+            if(doc.data().status.broadcasting == true){
+            let friends = {...this.state.friends};
+            friends[friendUID] = doc.data();
+            this.setState({friends: friends})
+          } else if (this.state.friends && friendUID in this.state.friends){
+            let friends = {...this.state.friends};
+            delete friends[friendUID]
+            this.setState({friends: friends})
+          }
+          })
+      });
+    });
+  }
     
-
-
-      this.setState({friends:[{name:'Jonathan Dai',status:'main is poppin roll thru',location:{latitude:4,longitude:199}},
-  {name:'Anna Deng',status:'at home watching da bachelor',location:{latitude:4,longitude:199}},
-  {name:'Float Teephop',status:'finished my hw for the week hang with me',location:{latitude:4,longitude:199}},
-  {name:'Drew Parsons',status:'at data viz studio yeet-haw',location:{latitude:4,longitude:199}}]})
-  }
-
-  getFriendsList() {
-
-    var friendsList = [];
-
-
-
-  }
-
-  getFriendMarkers() {
-
-  }
-
   firebaseLogout = () => {
     firebase.auth().signOut()
   }
@@ -112,6 +119,7 @@ export default class Main extends React.Component {
    }
 
   render() {
+    console.log(this.state)
     return (
       <View style={styles.container}>
 
@@ -127,28 +135,34 @@ export default class Main extends React.Component {
         showsUserLocation
         ref = { map => {this._map = map} }>
 
-          {this.state.markers && this.state.markers.map(marker => (
+          {this.state.friends && Object.keys(this.state.friends).map(friendUID => {
+
+            friend = this.state.friends[friendUID]
+           return (
             <Marker
-              coordinate={marker.latlng}
-              title={this.state.hello}
-              description={marker.description}>
+              coordinate={friend.currentLocation}
+              title={friend.name}>
               <Image
-          style={{width: 40, height: 40, borderRadius:20, borderColor: 'white', borderWidth: 1}}
-          source={{uri: 'https://avatars2.githubusercontent.com/u/8173340?s=400&v=4'}}
+          style={{padding:10, width: 40, height: 40, borderRadius:20, borderColor: 'white', borderWidth: 1}}
+          source={{uri: friend.photoURL}}
         />
               </Marker>
-          ))}
+          )
+          
+            })}
 
         </MapView>
 
         <ScrollView style={this.state.mapPressed ? styles.hiddenFriends : styles.openFriends}>
 
-            {this.state.friends.map(friend => {
+            {this.state.friends && Object.keys(this.state.friends).map(friendUID => {
+              friend = this.state.friends[friendUID]
+              
           return (
             <Friends
               name={friend.name}
-              status={friend.status}
-              location={friend.location}
+              status={friend.status.status}
+              location={friend.currentLocation}
             />
           );
         })}
