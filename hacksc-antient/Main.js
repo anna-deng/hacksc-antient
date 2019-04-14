@@ -2,8 +2,10 @@ import React, {Component} from 'react';
 import { StyleSheet, Text, View, Alert, Image } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import { Button } from 'react-native-elements';
+import { Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from './Firebase';
+import { TouchableOpacity } from 'react-native-elements';
 
 
 export default class Main extends React.Component {
@@ -30,7 +32,7 @@ export default class Main extends React.Component {
   componentDidMount() {
 
     ref = firebase.database().ref('hi');
-    
+
     this._getCoords();
 
     ref.on('value', (snapshot) => {
@@ -43,7 +45,7 @@ export default class Main extends React.Component {
 
     var friendsList = [];
 
-    
+
 
   }
 
@@ -71,10 +73,30 @@ export default class Main extends React.Component {
     );
   };
 
+  _noFriends = () => {
+     Alert.alert(
+       'chill.',
+       'are your current friends not enough?',
+       [
+         {text: 'sorry', onPress: () => console.log('sorry')},
+         {text: 'sorry', onPress: () => console.log('sorry'), style: 'cancel'},
+       ],
+       { cancelable: false }
+     )
+   }
+
   render() {
     return (
-     
+
       <View style={styles.container}>
+
+      <Header
+    leftComponent={{ icon: 'menu', color: '#fff' }}
+    centerComponent={{ text: 'Hotspots', style: { color: '#fff', fontWeight: 'bold', fontSize: 20 } }}
+    rightComponent={<Button
+      onPress={this._noFriends}
+      title="Add"/>
+    }/>
 
         <MapView  style={styles.map}
         showsUserLocation
@@ -91,16 +113,16 @@ export default class Main extends React.Component {
         />
               </Marker>
           ))}
-        
+
         </MapView>
-      
-        
+
+
         <View style={{position: 'absolute', bottom: 0, left: 0, margin: 20}}>
           <Button
             onPress={this.firebaseLogout}
             title="Sign Out"/>
         </View>
-        
+
         <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
           <Button
             onPress={this._getCoords}
