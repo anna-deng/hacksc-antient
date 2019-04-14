@@ -38,20 +38,21 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'rgba(256,256,256,1.0)',
     paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     flexDirection: "row",
   },
   name:{
     fontSize: 18,
     textAlign:'left',
-    fontWeight: 'bold'
-
+    fontWeight: 'bold',
+    paddingHorizontal: 10
   },
   status:{
     fontSize: 15,
     textAlign:'left',
     fontWeight: '200',
-    color: 'gray'
+    color: 'gray',
+    paddingHorizontal: 10
   },
 
   circle: {
