@@ -19,6 +19,7 @@ export default class Main extends React.Component {
     super(props);
     this._getCoords = this._getCoords.bind(this);
     this._openMenu = this._openMenu.bind(this);
+    this._broadcast = this._broadcast.bind(this);
 
 
 
@@ -26,6 +27,7 @@ export default class Main extends React.Component {
         position: null,
         mapPressed: false,
         openMenu: false,
+        isBroadcasting: false
     };
   }
 
@@ -114,7 +116,31 @@ export default class Main extends React.Component {
 
 _broadcast = () =>{
 
+  const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
+  userFirestoreRef.onSnapshot((doc) => {
+    if(doc.data().status.broadcasting == true){
+    userFirestoreRef.update({
+        status: {
+          broadcasting: false,
+          status: 'fdfef u',
+        }
+      })
+      this.setState({isBroadcasting: false});
 }
+
+    else{
+      userFirestoreRef.update({
+          status: {
+            broadcasting: true,
+            status: 'hi I',
+          }
+        })
+        this.setState({isBroadcasting: true});
+    }
+  })
+}
+
+
 
    _openMenu = () => {
     this.setState({openMenu:true})
@@ -211,14 +237,20 @@ _broadcast = () =>{
             <Button
               size={5}
               onPress={this._broadcast}
-              icon={{
-                name: "wifi-tethering",
+              icon = {this.state.isBroadcasting ?
+                {name: "portable-wifi-off",
+                color: "white",
+                zIndex:2,
+                bottom: 0,
+                left: 0,} :
+                {name: "wifi-tethering",
                 size: 20,
                 color: "white",
                 zIndex:2,
                 bottom: 0,
                 left: 0,
-              }}/>
+              }}
+              />
           </View>
 
           </TouchableOpacity>
