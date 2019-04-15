@@ -19,7 +19,6 @@ export default class Main extends React.Component {
     super(props);
     this._getCoords = this._getCoords.bind(this);
     this._openMenu = this._openMenu.bind(this);
-    this._broadcast = this._broadcast.bind(this);
 
 
 
@@ -27,7 +26,8 @@ export default class Main extends React.Component {
         position: null,
         mapPressed: false,
         openMenu: false,
-        isBroadcasting: false
+        isBroadcasting: false,
+        firebaseLoad: false
     };
   }
 
@@ -42,7 +42,7 @@ export default class Main extends React.Component {
 
     Location.watchPositionAsync({
       accuracy: Location.Accuracy.Balanced,
-      timeInterval: 1000,
+      timeInterval: 60000,
       distanceInterval: 50
     }, (location) => {
     userFirestoreRef.update({
@@ -53,17 +53,31 @@ export default class Main extends React.Component {
         }
       })   });
 
-      this.getFriendsList();
+      this.attachFirebaseListener();
 
   }
 
 
 
 
-  getFriendsList = () => {
+  attachFirebaseListener = () => {
 
     const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
     userFirestoreRef.onSnapshot((doc) => {
+      this.getFriendsList(doc);
+      this.updateStatus(doc);
+    })
+  }
+
+  updateStatus = (doc) => {
+    this.setState({
+      status: doc.data().status
+    })
+
+  }
+
+  getFriendsList = (doc) => {
+
       //console.log(doc.data())
       doc.data().friends.forEach(friendUID => {
         firebase.firestore().collection("users").doc(friendUID)
@@ -78,9 +92,9 @@ export default class Main extends React.Component {
             this.setState({friends: friends})
           }
           })
-      });
-    });
+      })
   }
+
 
   firebaseLogout = () => {
     firebase.auth().signOut()
@@ -114,30 +128,26 @@ export default class Main extends React.Component {
      )
    }
 
-_broadcast = () =>{
 
+broadcastHandler = () => {
   const userFirestoreRef =  firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid || this.props.navigation.getParam('uid'));
-  userFirestoreRef.onSnapshot((doc) => {
-    if(doc.data().status.broadcasting == true){
+  if(this.state.status.broadcasting){
     userFirestoreRef.update({
         status: {
           broadcasting: false,
           status: 'fdfef u',
         }
       })
-      this.setState({isBroadcasting: false});
-}
+  } else {
 
-    else{
-      userFirestoreRef.update({
-          status: {
-            broadcasting: true,
-            status: 'hi I',
-          }
-        })
-        this.setState({isBroadcasting: true});
-    }
-  })
+    userFirestoreRef.update({
+        status: {
+          broadcasting: true,
+          status: 'hi I',
+        }
+      })
+
+  }
 }
 
 
@@ -147,7 +157,6 @@ _broadcast = () =>{
     }
 
   render() {
-    console.log(this.state)
     return (
     <SideMenu
       isOpen={this.state.openMenu}
@@ -236,15 +245,15 @@ _broadcast = () =>{
           <View style={{margin: 15}}>
             <Button
               size={5}
-              onPress={this._broadcast}
-              icon = {this.state.isBroadcasting ?
+              onPress={this.broadcastHandler}
+              loading = {this.state.firebaseLoad}
+              icon = {this.state.status && this.state.status.broadcasting ?
                 {name: "portable-wifi-off",
                 color: "white",
                 zIndex:2,
                 bottom: 0,
                 left: 0,} :
                 {name: "wifi-tethering",
-                size: 20,
                 color: "white",
                 zIndex:2,
                 bottom: 0,
